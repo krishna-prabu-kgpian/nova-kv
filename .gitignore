@@ -1,0 +1,11 @@
+# Build outputs
+/value_arena_test
+/hash_index_test
+/kvstore_test
+/baseline_bench
+/*_test_san
+
+*.o
+*.out
+
+/build/
