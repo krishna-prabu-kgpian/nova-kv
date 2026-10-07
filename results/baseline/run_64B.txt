@@ -1,0 +1,11 @@
+entries    = 100000
+query ops  = 50000000
+value size = 64 bytes
+
+insert                10.10 Mops/s    99.04 ns/op
+get-hit               41.67 Mops/s    24.00 ns/op
+get-miss              38.68 Mops/s    25.85 ns/op
+overwrite             15.06 Mops/s    66.40 ns/op
+erase                 64.64 Mops/s    15.47 ns/op
+
+checksum = 3150000000

@@ -1,0 +1,11 @@
+# started on Wed Oct  7 23:37:41 2026
+
+
+ Performance counter stats for 'taskset -c 2 ./baseline_bench 100000 50000000 64' (5 runs):
+
+       103,146,209      branch-misses                                                           ( +-  0.03% )
+       534,589,081      cache-references                                                        ( +-  0.71% )
+       175,574,190      cache-misses                                                            ( +-  0.20% )
+
+       2.906481432 +- 0.146590199 seconds time elapsed  ( +-  5.04% )
+

@@ -1,0 +1,11 @@
+# started on Wed Oct  7 23:37:24 2026
+
+
+ Performance counter stats for 'taskset -c 2 ./baseline_bench 100000 50000000 64' (5 runs):
+
+    14,388,426,700      cycles                                                                  ( +-  6.80% )
+    38,975,330,830      instructions                                                            ( +-  0.02% )
+     7,207,043,320      branches                                                                ( +-  0.02% )
+
+       2.981166597 +- 0.249798416 seconds time elapsed  ( +-  8.38% )
+

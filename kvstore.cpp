@@ -88,6 +88,10 @@ bool KVStore::put(
         return false;
     }
 
+    [[maybe_unused]]
+    auto guard =
+        sync_.write_guard();
+
     /*
      * First make sure the index is capable of committing
      * this operation.
@@ -177,6 +181,10 @@ bool KVStore::get(
         return false;
     }
 
+    [[maybe_unused]]
+    auto guard =
+        sync_.read_guard();
+
     nova::internal::ValueRef ref{};
 
     const auto index_status =
@@ -248,6 +256,9 @@ bool KVStore::get(
 bool KVStore::erase(
     long key
 ) {
+    [[maybe_unused]]
+    auto guard =
+        sync_.write_guard();
     const auto status =
         index_.erase(key);
 

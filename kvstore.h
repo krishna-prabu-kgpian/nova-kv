@@ -3,6 +3,7 @@
 #include <cstddef>
 
 #include "internal/hash_index.h"
+#include "internal/sync_policy.h"
 #include "internal/value_arena.h"
 
 class KVStore {
@@ -28,6 +29,8 @@ public:
     bool erase(long key);
 
 private:
+    nova::internal::ActiveSyncPolicy sync_;
+
     nova::internal::HashIndex index_;
     nova::internal::ValueArena arena_;
 };
