@@ -17,6 +17,9 @@ constexpr std::size_t kWords = 16;
 constexpr std::uint64_t kWriterIterations =
     100'000;
 
+constexpr std::uint64_t kReaderIterations =
+    250'000;
+
 constexpr int kReaderCount = 8;
 
 struct Record {
@@ -77,7 +80,6 @@ int main() {
     }
 
     std::atomic<bool> start{false};
-    std::atomic<bool> writer_done{false};
 
     std::atomic<std::uint64_t>
         read_count{0};
@@ -132,11 +134,6 @@ int main() {
                     break;
                 }
             }
-
-            writer_done.store(
-                true,
-                std::memory_order_release
-            );
         }
     );
 
@@ -162,38 +159,47 @@ int main() {
 
                 Record output{};
 
-                while (
-                    !writer_done.load(
-                        std::memory_order_acquire
-                    )
-                ) {
-                    if (
-                        !store.get(
-                            kKey,
-                            &output,
-                            sizeof(output)
-                        )
-                    ) {
-                        error_count.fetch_add(
-                            1,
-                            std::memory_order_relaxed
-                        );
+                for (
+    std::uint64_t iteration = 0;
+    iteration < kReaderIterations;
+    ++iteration
+) {
+    if (
+        !store.get(
+            kKey,
+            &output,
+            sizeof(output)
+        )
+    ) {
+        error_count.fetch_add(
+            1,
+            std::memory_order_relaxed
+        );
 
-                        continue;
-                    }
+        continue;
+    }
 
-                    if (!valid_record(output)) {
-                        error_count.fetch_add(
-                            1,
-                            std::memory_order_relaxed
-                        );
-                    }
+    if (!valid_record(output)) {
+        error_count.fetch_add(
+            1,
+            std::memory_order_relaxed
+        );
+    }
 
-                    read_count.fetch_add(
-                        1,
-                        std::memory_order_relaxed
-                    );
-                }
+    read_count.fetch_add(
+        1,
+        std::memory_order_relaxed
+    );
+
+    /*
+     * This is not required for correctness.
+     * It merely avoids making this stress test
+     * maximally hostile to an exclusive waiter.
+     */
+    if ((iteration & 0x3FF) == 0) {
+        std::this_thread::yield();
+    }
+}
 
                 /*
                  * Perform a few extra reads after the

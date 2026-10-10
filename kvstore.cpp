@@ -5,6 +5,8 @@
 #include "internal/config.h"
 #include "kv_error.h"
 
+#include <stdexcept>
+
 namespace {
 
 KVError map_index_error(
@@ -285,3 +287,54 @@ bool KVStore::erase(
 
     return true;
 }
+
+#ifdef NOVA_WORKLOAD_COMPAT
+
+bool KVStore::create_index(
+    std::size_t,
+    std::size_t
+) {
+    throw std::logic_error(
+        "create_index() is unavailable before Part C"
+    );
+}
+
+int KVStore::index_get(
+    const void*,
+    std::size_t,
+    long*,
+    int
+) const {
+    throw std::logic_error(
+        "index_get() is unavailable before Part C"
+    );
+}
+
+
+Transaction::Transaction(
+    KVStore& store
+)
+    : store_(store) {}
+
+
+Transaction::~Transaction() = default;
+
+
+void Transaction::put(
+    long,
+    const void*,
+    std::size_t
+) {
+    throw std::logic_error(
+        "Transaction is unavailable before Part C"
+    );
+}
+
+
+bool Transaction::commit() {
+    throw std::logic_error(
+        "Transaction is unavailable before Part C"
+    );
+}
+
+#endif
